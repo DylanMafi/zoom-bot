@@ -4,15 +4,21 @@ const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const puppeteer = require('puppeteer-core');  // A importação do puppeteer-core é necessária para usar a flag --no-sandbox
 
 const app = express();
 const port = process.env.PORT || 4000;
 
 app.use(bodyParser.json());
 
-// Inicialização do cliente WhatsApp
+// Inicialização do cliente WhatsApp com a opção no-sandbox
 const client = new Client({
   authStrategy: new LocalAuth(),
+  puppeteer: {
+    launchOptions: {
+      args: ['--no-sandbox', '--disable-setuid-sandbox'], // Adicionando a flag --no-sandbox
+    },
+  },
 });
 
 client.on('qr', (qr) => {
